@@ -1,3 +1,5 @@
+import fetch from 'node-fetch';
+
 export class Toast {
   static async get(url: string, headers?: {}): Promise<JSON> {
     return await fetch(url, {
