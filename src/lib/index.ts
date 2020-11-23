@@ -1,55 +1,64 @@
+import axios, { AxiosInstance, AxiosResponse } from "axios";
+
 export class Toast {
-  static async get(url: string, headers?: {}): Promise<JSON> {
-    return await fetch(url, {
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-        ...headers,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => data)
-      .catch((e) => e);
+  protected readonly instance: AxiosInstance;
+
+  public constructor(public baseURL: string) {
+    this.instance = axios.create({ baseURL });
+    this.responseInterceptor();
   }
 
-  static async create(url: string, body: {}, headers: {}): Promise<JSON> {
-    return await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify({ ...body }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-        ...headers,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => data)
-      .catch((e) => e);
+  private responseInterceptor() {
+    this.instance.interceptors.response.use(
+      this.handleResponse,
+      this.handleError
+    );
   }
 
-  static async update(url: string, body: {}, headers: {}): Promise<JSON> {
-    return await fetch(url, {
-      method: 'PATCH',
-      body: JSON.stringify({ ...body }),
+  private handleResponse = (response: AxiosResponse) =>
+    Object.assign({}, response.data, response.status);
+
+  private handleError = (error: any) => Promise.reject(error);
+
+  async get(path: string, headers?: {}): Promise<JSON> {
+    return await this.instance.get(path, {
       headers: {
-        'Content-type': 'application/json; charset=UTF-8',
+        "Content-type": "application/json; charset=UTF-8",
         ...headers,
       },
-    })
-      .then((res) => res.json())
-      .then((data) => data)
-      .catch((e) => e);
+    });
   }
 
-  static async delete(url: string, body: {}, headers: {}): Promise<JSON> {
-    return await fetch(url, {
-      method: 'DELETE',
+  async create(path: string, body: {}, headers?: {}): Promise<JSON> {
+    return await this.instance.post(path, {
+      method: "POST",
       body: JSON.stringify({ ...body }),
       headers: {
-        'Content-type': 'application/json; charset=UTF-8',
+        "Content-type": "application/json; charset=UTF-8",
         ...headers,
       },
-    })
-      .then((res) => res.json())
-      .then((data) => data)
-      .catch((e) => e);
+    });
+  }
+
+  async update(path: string, body: {}, headers?: {}): Promise<JSON> {
+    return await this.instance.patch(path, {
+      method: "PATCH",
+      body: JSON.stringify({ ...body }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        ...headers,
+      },
+    });
+  }
+
+  async delete(path: string, body?: {}, headers?: {}): Promise<JSON> {
+    return await this.instance.delete(path, {
+      method: "DELETE",
+      data: JSON.stringify({ ...body }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        ...headers,
+      },
+    });
   }
 }
