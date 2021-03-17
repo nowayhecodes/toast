@@ -1,7 +1,5 @@
 import { Toast } from "../lib/index";
 
-jest.mock("../lib/index");
-
 describe("Toast", () => {
   beforeEach(() => {
     jest.clearAllMocks();

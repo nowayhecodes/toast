@@ -6,7 +6,7 @@
   "scripts": {
     "start:dev": "nodemon --watch 'src/**/*.ts' --ignore '__test__/**/*.test.ts' --exec 'ts-node' src/lib/index.ts",
     "build": "rm -rf ./dist/ && tsc",
-    "test": "jest --coverage --detectOpenHandles --forceExit",
+    "test": "jest --ci --coverage --detectOpenHandles --forceExit && codecov",
     "eslint": "eslint ./src/lib/**/*.ts"
   },
   "keywords": [
